@@ -29,6 +29,7 @@ namespace PdfiumViewer
         private readonly List<PageCache> _pageCache = new List<PageCache>();
         private int _visiblePageStart;
         private int _visiblePageEnd;
+        private float _renderedDpiX;
         private PdfPageLink _cachedLink;
         private DragState _dragState;
         private PdfRotation _rotation;
@@ -310,11 +311,15 @@ namespace PdfiumViewer
 
                 _scaleFactor = ((double)height / _maxHeight) * Zoom;
             }
-            else
+            else if (zoomMode == PdfViewerZoomMode.FitWidth)
             {
                 int width = bounds.Width - ShadeBorder.Size.Horizontal - PageMargin.Horizontal;
 
                 _scaleFactor = ((double)width / _maxWidth) * Zoom;
+            }
+            else if (zoomMode == PdfViewerZoomMode.FixedSize)
+            {
+                _scaleFactor = (_renderedDpiX / 72) * Zoom;
             }
         }
 
@@ -351,6 +356,7 @@ namespace PdfiumViewer
 
             _visiblePageStart = -1;
             _visiblePageEnd = -1;
+            _renderedDpiX = e.Graphics.DpiX;
 
             for (int page = 0; page < _document.PageSizes.Count; page++)
             {

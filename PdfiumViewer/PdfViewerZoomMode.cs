@@ -4,6 +4,7 @@
     {
         FitHeight,
         FitWidth,
-        FitBest
+        FitBest,
+        FixedSize,
     }
 }

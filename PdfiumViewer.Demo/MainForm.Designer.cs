@@ -75,6 +75,7 @@ namespace PdfiumViewer.Demo
             this._showToolbar = new System.Windows.Forms.ToolStripButton();
             this._showBookmarks = new System.Windows.Forms.ToolStripButton();
             this.pdfViewer1 = new PdfiumViewer.PdfViewer();
+            this._fixedSize = new System.Windows.Forms.ToolStripButton();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -244,6 +245,7 @@ namespace PdfiumViewer.Demo
             this._fitWidth,
             this._fitHeight,
             this._fitBest,
+            this._fixedSize,
             this.toolStripSeparator5,
             this._rotateLeft,
             this._rotateRight,
@@ -430,6 +432,16 @@ namespace PdfiumViewer.Demo
             this.pdfViewer1.Size = new System.Drawing.Size(1128, 546);
             this.pdfViewer1.TabIndex = 0;
             // 
+            // _fixedSize
+            // 
+            this._fixedSize.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this._fixedSize.Image = ((System.Drawing.Image)(resources.GetObject("_fixedSize.Image")));
+            this._fixedSize.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this._fixedSize.Name = "_fixedSize";
+            this._fixedSize.Size = new System.Drawing.Size(61, 22);
+            this._fixedSize.Text = "Fixed Size";
+            this._fixedSize.Click += new System.EventHandler(this._fixedSize_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -495,6 +507,7 @@ namespace PdfiumViewer.Demo
         private System.Windows.Forms.ToolStripMenuItem rotate90ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem rotate180ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem rotate270ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripButton _fixedSize;
     }
 }
 

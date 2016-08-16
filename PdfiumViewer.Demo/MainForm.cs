@@ -192,6 +192,11 @@ namespace PdfiumViewer.Demo
             FitPage(PdfViewerZoomMode.FitBest);
         }
 
+        private void _fixedSize_Click(object sender, EventArgs e)
+        {
+            FitPage(PdfViewerZoomMode.FixedSize);
+        }
+
         private void _page_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
