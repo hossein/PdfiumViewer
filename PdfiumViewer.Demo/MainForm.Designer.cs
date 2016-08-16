@@ -68,14 +68,15 @@ namespace PdfiumViewer.Demo
             this._fitWidth = new System.Windows.Forms.ToolStripButton();
             this._fitHeight = new System.Windows.Forms.ToolStripButton();
             this._fitBest = new System.Windows.Forms.ToolStripButton();
+            this._fixedSize = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this._rotateLeft = new System.Windows.Forms.ToolStripButton();
             this._rotateRight = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
             this._showToolbar = new System.Windows.Forms.ToolStripButton();
             this._showBookmarks = new System.Windows.Forms.ToolStripButton();
+            this._zoomPercent = new System.Windows.Forms.ToolStripLabel();
             this.pdfViewer1 = new PdfiumViewer.PdfViewer();
-            this._fixedSize = new System.Windows.Forms.ToolStripButton();
             this.menuStrip1.SuspendLayout();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -238,6 +239,7 @@ namespace PdfiumViewer.Demo
             this.toolStripSeparator2,
             this.toolStripLabel2,
             this._zoom,
+            this._zoomPercent,
             this.toolStripSeparator4,
             this.toolStripButton4,
             this.toolStripButton3,
@@ -372,6 +374,16 @@ namespace PdfiumViewer.Demo
             this._fitBest.Text = "Fit Best";
             this._fitBest.Click += new System.EventHandler(this._fitBest_Click);
             // 
+            // _fixedSize
+            // 
+            this._fixedSize.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this._fixedSize.Image = ((System.Drawing.Image)(resources.GetObject("_fixedSize.Image")));
+            this._fixedSize.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this._fixedSize.Name = "_fixedSize";
+            this._fixedSize.Size = new System.Drawing.Size(61, 22);
+            this._fixedSize.Text = "Fixed Size";
+            this._fixedSize.Click += new System.EventHandler(this._fixedSize_Click);
+            // 
             // toolStripSeparator5
             // 
             this.toolStripSeparator5.Name = "toolStripSeparator5";
@@ -424,6 +436,12 @@ namespace PdfiumViewer.Demo
             this._showBookmarks.Text = "Show Bookmarks";
             this._showBookmarks.Click += new System.EventHandler(this._hideBookmarks_Click);
             // 
+            // _zoomPercent
+            // 
+            this._zoomPercent.Name = "_zoomPercent";
+            this._zoomPercent.Size = new System.Drawing.Size(35, 22);
+            this._zoomPercent.Text = "100%";
+            // 
             // pdfViewer1
             // 
             this.pdfViewer1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -431,16 +449,6 @@ namespace PdfiumViewer.Demo
             this.pdfViewer1.Name = "pdfViewer1";
             this.pdfViewer1.Size = new System.Drawing.Size(1128, 546);
             this.pdfViewer1.TabIndex = 0;
-            // 
-            // _fixedSize
-            // 
-            this._fixedSize.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            this._fixedSize.Image = ((System.Drawing.Image)(resources.GetObject("_fixedSize.Image")));
-            this._fixedSize.ImageTransparentColor = System.Drawing.Color.Magenta;
-            this._fixedSize.Name = "_fixedSize";
-            this._fixedSize.Size = new System.Drawing.Size(61, 22);
-            this._fixedSize.Text = "Fixed Size";
-            this._fixedSize.Click += new System.EventHandler(this._fixedSize_Click);
             // 
             // MainForm
             // 
@@ -508,6 +516,7 @@ namespace PdfiumViewer.Demo
         private System.Windows.Forms.ToolStripMenuItem rotate180ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem rotate270ToolStripMenuItem;
         private System.Windows.Forms.ToolStripButton _fixedSize;
+        private System.Windows.Forms.ToolStripLabel _zoomPercent;
     }
 }
 

@@ -19,6 +19,7 @@ namespace PdfiumViewer.Demo
 
             pdfViewer1.Renderer.DisplayRectangleChanged += Renderer_DisplayRectangleChanged;
             pdfViewer1.Renderer.ZoomChanged += Renderer_ZoomChanged;
+            pdfViewer1.Renderer.Resize += Renderer_Resize;
 
             cutMarginsWhenPrintingToolStripMenuItem.PerformClick();
 
@@ -30,6 +31,12 @@ namespace PdfiumViewer.Demo
         void Renderer_ZoomChanged(object sender, EventArgs e)
         {
             _zoom.Text = pdfViewer1.Renderer.Zoom.ToString();
+            _zoomPercent.Text = String.Format("{0:#%}", pdfViewer1.Renderer.ScaleFactor);
+        }
+
+        private void Renderer_Resize(object sender, EventArgs e)
+        {
+            _zoomPercent.Text = String.Format("{0:#%}", pdfViewer1.Renderer.ScaleFactor);
         }
 
         void Renderer_DisplayRectangleChanged(object sender, EventArgs e)
@@ -54,6 +61,7 @@ namespace PdfiumViewer.Demo
 
             _showBookmarks.Checked = pdfViewer1.ShowBookmarks;
             _showToolbar.Checked = pdfViewer1.ShowToolbar;
+            _zoomPercent.Text = String.Format("{0:#%}", pdfViewer1.Renderer.ScaleFactor);
         }
 
         private PdfDocument OpenDocument(string fileName)

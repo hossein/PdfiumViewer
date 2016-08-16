@@ -58,9 +58,12 @@ namespace PdfiumViewer
             }
         }
 
-        protected virtual void SetZoom(double value, Point? focus)
+        protected virtual void SetZoom(double value, Point? focus, bool passive = false)
         {
             _zoom = value;
+
+            if (passive)
+                return;
 
             OnZoomChanged(EventArgs.Empty);
 

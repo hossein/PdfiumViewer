@@ -29,7 +29,6 @@ namespace PdfiumViewer
         private readonly List<PageCache> _pageCache = new List<PageCache>();
         private int _visiblePageStart;
         private int _visiblePageEnd;
-        private float _renderedDpiX;
         private PdfPageLink _cachedLink;
         private DragState _dragState;
         private PdfRotation _rotation;
@@ -83,6 +82,17 @@ namespace PdfiumViewer
         }
 
         /// <summary>
+        /// Returns a value that can be displayed to user as the 'Zoom Percent'.
+        /// </summary>
+        public double ScaleFactor
+        {
+            get
+            {
+                return _scaleFactor;
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the way the document should be zoomed initially.
         /// </summary>
         public PdfViewerZoomMode ZoomMode
@@ -93,6 +103,18 @@ namespace PdfiumViewer
                 _zoomMode = value;
                 PerformLayout();
             }
+        }
+
+        /// <summary>
+        /// Sets both zoom value and mode with firing only one ZoomChanged event.
+        /// It also prevents current page from changing as a result of changing zoom and mode in multiple steps.
+        /// </summary>
+        public void SetZoomPercentAndMode(double zoom, PdfViewerZoomMode zoomMode)
+        {
+            //Must call base's, not ours, SetZoom to preserver scroll position.
+            base.SetZoom(zoom, null, true);
+            ZoomMode = zoomMode;
+            Zoom = zoom;
         }
 
         /// <summary>
@@ -136,9 +158,9 @@ namespace PdfiumViewer
 
         protected override void OnZoomChanged(EventArgs e)
         {
-            base.OnZoomChanged(e);
+            UpdateScrollbars(); //Calculate the ScaleFactor before raising ZoomChanged event.
 
-            UpdateScrollbars();
+            base.OnZoomChanged(e);
         }
 
         /// <summary>
@@ -167,7 +189,7 @@ namespace PdfiumViewer
 
             foreach (var size in _document.PageSizes)
             {
-                var translated = TranslateSize(size);
+                var translated = TranslatedDpiAwareSize(size);
                 _height += (int)translated.Height;
                 _maxWidth = Math.Max((int)translated.Width, _maxWidth);
                 _maxHeight = Math.Max((int)translated.Height, _maxHeight);
@@ -228,7 +250,7 @@ namespace PdfiumViewer
 
             for (int page = 0; page < _document.PageSizes.Count; page++)
             {
-                var size = TranslateSize(_document.PageSizes[page]);
+                var size = TranslatedDpiAwareSize(_document.PageSizes[page]);
                 int height = (int)(size.Height * _scaleFactor);
                 int fullHeight = height + ShadeBorder.Size.Vertical + PageMargin.Vertical;
                 int width = (int)(size.Width * _scaleFactor);
@@ -319,7 +341,7 @@ namespace PdfiumViewer
             }
             else if (zoomMode == PdfViewerZoomMode.FixedSize)
             {
-                _scaleFactor = (_renderedDpiX / 72) * Zoom;
+                _scaleFactor = Zoom;
             }
         }
 
@@ -356,7 +378,6 @@ namespace PdfiumViewer
 
             _visiblePageStart = -1;
             _visiblePageEnd = -1;
-            _renderedDpiX = e.Graphics.DpiX;
 
             for (int page = 0; page < _document.PageSizes.Count; page++)
             {
@@ -583,20 +604,30 @@ namespace PdfiumViewer
             ));
         }
 
-        private SizeF TranslateSize(SizeF size)
+        private SizeF TranslatedDpiAwareSize(SizeF size)
         {
+            //Convert PDF Page sizes form 72 dpi to user screen dpi.
+            float factorX, factorY;
+            using (var graphics = CreateGraphics())
+            {
+                factorX = graphics.DpiX / 72;
+                factorY = graphics.DpiY / 72;
+            }
+
             switch (Rotation)
             {
                 case PdfRotation.Rotate90:
                 case PdfRotation.Rotate270:
-                    return new SizeF(size.Height, size.Width);
+                    //Do not swap factorX/factorY here; only the page is rotated, screen dpi
+                    //accross horizontal and vertical dimensions is always the same.
+                    return new SizeF(size.Height * factorX, size.Width * factorY);
 
                 default:
-                    return size;
+                    return new SizeF(size.Width * factorX, size.Height * factorY);
             }
         }
 
-        protected override void SetZoom(double zoom, Point? focus)
+        protected override void SetZoom(double zoom, Point? focus, bool passive = false)
         {
             Point location;
 
@@ -623,7 +654,7 @@ namespace PdfiumViewer
 
             double oldScale = Zoom;
 
-            base.SetZoom(zoom, null);
+            base.SetZoom(zoom, null, passive);
 
             var newLocation = new Point(
                 (int)(location.X * (zoom / oldScale)),
