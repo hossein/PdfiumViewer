@@ -93,6 +93,17 @@ namespace PdfiumViewer
         }
 
         /// <summary>
+        /// PdfiumRenderer has a special behavior: It can set a zoom level even in FitWidth or
+        /// FitBest zoom modes. Therefore, user can be in one of the above modes and use Ctrl +
+        /// MouseWheel to zoom while still staying in that mode.
+        /// If MouseZoomFixesSize is set to true, zooming using Ctrl + Mouse Wheel will set the
+        /// ZoomMode to FixedSize automatically, which is the default behavior most users expect.
+        /// The default value is false, conforming to behavior of original PdfiumRenderer versions.
+        /// </summary>
+        [DefaultValue(false)]
+        public bool MouseZoomFixesSize { get; set; }
+
+        /// <summary>
         /// Gets or sets the way the document should be zoomed initially.
         /// </summary>
         public PdfViewerZoomMode ZoomMode
@@ -101,6 +112,7 @@ namespace PdfiumViewer
             set
             {
                 _zoomMode = value;
+                Invalidate();
                 PerformLayout();
             }
         }
@@ -154,6 +166,21 @@ namespace PdfiumViewer
             base.OnLayout(levent);
 
             UpdateScrollbars();
+        }
+
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            if (MouseZoomFixesSize &&
+                ZoomMode != PdfViewerZoomMode.FixedSize &&
+                (MouseWheelMode == MouseWheelMode.PanAndZoom || MouseWheelMode == MouseWheelMode.Zoom) &&
+                (ModifierKeys & Keys.Control) != 0)
+            {
+                //Preserve the automatic fit zoom value. Order is important.
+                base.SetZoom(_scaleFactor, null, true);
+                ZoomMode = PdfViewerZoomMode.FixedSize;
+            }
+
+            base.OnMouseWheel(e);
         }
 
         protected override void OnZoomChanged(EventArgs e)
